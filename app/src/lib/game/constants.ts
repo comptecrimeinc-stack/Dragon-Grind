@@ -12,7 +12,8 @@ export const TITAN_CAP = 30;
 export const REBIRTH_CAP = 20;
 export const ASC_CAP = 10;
 
-export const MAX_FORGE_CPS = 12;
+/** Souffles par seconde au-delà desquels on suppose un autoclicker (deux pouces humains restent en dessous). */
+export const MAX_FORGE_CPS = 20;
 export const COMBO_WINDOW_MS = 1200;
 export const COMBO_MAX = 25;
 export const EGG_TAPS_TO_HATCH = 15;

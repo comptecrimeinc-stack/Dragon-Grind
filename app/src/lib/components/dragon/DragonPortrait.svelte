@@ -62,39 +62,40 @@
 
   // Un souffle n'est compté qu'au relâchement, si le doigt a peu bougé :
   // un glissement qui commence sur le dragon fait défiler la page sans souffler.
+  // Chaque doigt est suivi séparément, pour ne perdre aucun souffle quand on tape à deux pouces.
   const MOVE_CANCEL_PX = 12;
-  let start: { id: number; x: number; y: number; moved: boolean } | null = null;
+  const touches = new Map<number, { x: number; y: number; moved: boolean }>();
 
   function onpointerdown(e: PointerEvent) {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    start = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false };
+    touches.set(e.pointerId, { x: e.clientX, y: e.clientY, moved: false });
     pressed = true;
   }
 
   function onpointermove(e: PointerEvent) {
-    if (!start || e.pointerId !== start.id) return;
-    const dx = e.clientX - start.x;
-    const dy = e.clientY - start.y;
+    const touch = touches.get(e.pointerId);
+    if (!touch) return;
+    const dx = e.clientX - touch.x;
+    const dy = e.clientY - touch.y;
     if (dx * dx + dy * dy > MOVE_CANCEL_PX * MOVE_CANCEL_PX) {
-      start.moved = true;
-      pressed = false;
+      touch.moved = true;
+      pressed = [...touches.values()].some((x) => !x.moved);
     } else {
       const r = button.getBoundingClientRect();
       relief?.pointer((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
     }
   }
 
-  function onpointerup(e: PointerEvent) {
-    if (!start || e.pointerId !== start.id) return;
-    const { x, y, moved } = start;
-    start = null;
-    pressed = false;
-    if (!moved) breathe(x, y);
+  function release(e: PointerEvent): { x: number; y: number; moved: boolean } | undefined {
+    const touch = touches.get(e.pointerId);
+    touches.delete(e.pointerId);
+    pressed = [...touches.values()].some((x) => !x.moved);
+    return touch;
   }
 
-  function cancel() {
-    start = null;
-    pressed = false;
+  function onpointerup(e: PointerEvent) {
+    const touch = release(e);
+    if (touch && !touch.moved) breathe(touch.x, touch.y);
   }
 
   // Activation au clavier (Entrée/Espace) : souffle au centre.
@@ -131,8 +132,8 @@
     {onpointerdown}
     {onpointermove}
     {onpointerup}
-    onpointercancel={cancel}
-    onpointerleave={cancel}
+    onpointercancel={release}
+    onpointerleave={release}
     oncontextmenu={(e) => e.preventDefault()}
     {onclick}
   >

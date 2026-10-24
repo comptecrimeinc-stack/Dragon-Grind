@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { asset } from '#lib/assets.ts';
   import { COSMETIC_LABELS, DRAGONS } from '#lib/game/constants.ts';
   import { formatNumber as f } from '#lib/game/format.ts';
   import { frameDef, isFrameId } from '#lib/game/profile.ts';
   import { t } from '#lib/i18n/i18n.svelte.ts';
   import { game } from '#lib/stores/game.svelte.ts';
-  import Crown from './Crown.svelte';
+  import Avatar from './Avatar.svelte';
   import type { ProfileEntry } from './profileEntry.ts';
 
   let { entry, titleId }: { entry: ProfileEntry; titleId?: string } = $props();
@@ -31,13 +30,9 @@
 <div class="card-profile" class:own={isMe} class:ember>
   <div class="head"><span>✦</span><h3 id={titleId}>{t('PROFIL DU FORGERON')}</h3><span>✦</span></div>
   <div class="top">
-    <div class="medal" class:obsidian={shown.includes('obsidian-skin')}>
-      <div class="portrait">
-        {#if meta}<img src={asset(meta.portrait)} alt="" />{:else}🐲{/if}
-      </div>
-      {#if frame}<span class="crown"><Crown {frame} /></span>{/if}
+    <Avatar dragon={entry.dragon} {frame} size={96} glow={shown.includes('obsidian-skin')}>
       {#if shown.includes('founder-badge')}<span class="badge">🏅 {t('Soutien')}</span>{/if}
-    </div>
+    </Avatar>
     <div class="id">
       <strong class="name">{entry.name}</strong>
       <span class="title">{t(entry.title)}</span>
@@ -110,39 +105,6 @@
     display: flex;
     gap: 16px;
     align-items: center;
-  }
-
-  .medal {
-    position: relative;
-    flex: none;
-    width: 96px;
-    height: 96px;
-  }
-
-  .portrait {
-    position: absolute;
-    inset: 12px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #0c0a0e;
-    font-size: 2.4rem;
-  }
-
-  .portrait img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .medal.obsidian .portrait {
-    box-shadow: 0 0 18px #9b5cff;
-  }
-
-  .crown {
-    position: absolute;
-    inset: -6px;
   }
 
   .badge {

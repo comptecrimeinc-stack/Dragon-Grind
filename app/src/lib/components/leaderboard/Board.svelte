@@ -3,6 +3,7 @@
   import { boardRows, type Metric } from '#lib/game/leaderboard.ts';
   import { t } from '#lib/i18n/i18n.svelte.ts';
   import { game } from '#lib/stores/game.svelte.ts';
+  import Avatar from '../profile/Avatar.svelte';
   import PlayerName from './PlayerName.svelte';
 
   let { metric, title, format }: { metric: Metric; title: string; format: (v: number) => string } = $props();
@@ -16,7 +17,11 @@
   {#each rows as r (r.kind + r.name)}
     <div class="row" class:me={r.kind === 'me'}>
       <span class="rank">{r.rank}</span>
-      <span class="av" aria-hidden="true">{r.avatar}</span>
+      {#if r.kind === 'me'}
+        <Avatar dragon={r.dragon} frame={game.profile?.frame} size={40} />
+      {:else}
+        <span class="av" aria-hidden="true">{r.avatar}</span>
+      {/if}
       <PlayerName kind={r.kind} name={r.name} dragon={r.dragon} />
       <span class="val">{format(r.value)}</span>
     </div>
@@ -32,7 +37,7 @@
 
   .row {
     display: grid;
-    grid-template-columns: 28px 32px 1fr auto;
+    grid-template-columns: 28px 40px 1fr auto;
     gap: 8px;
     align-items: center;
     padding: 6px 8px;

@@ -5,6 +5,7 @@
   import { isMe, localRank } from '#lib/game/leaderboard.ts';
   import { t } from '#lib/i18n/i18n.svelte.ts';
   import { game } from '#lib/stores/game.svelte.ts';
+  import Avatar from '../profile/Avatar.svelte';
   import Board from './Board.svelte';
   import PlayerName from './PlayerName.svelte';
   import WorldBoard from './WorldBoard.svelte';
@@ -20,6 +21,7 @@
 <p class="intro">{t('Compare ta légende aux rivaux de la forge, aux héros de cet appareil, et au classement mondial des forgerons.')}</p>
 <h2>{t('Classements')} <small>{t('compétition de la forge')}</small></h2>
 <div class="card banner">
+  <Avatar dragon={me.dragon} frame={game.profile?.frame} size={56} />
   <PlayerName kind="me" name={me.name} dragon={me.dragon} />
   <small>{t('Rang #' + localRank(me.life, game.heroes, me.name) + ' · ' + (meta ? meta.name + ' · lignée ' + meta.line : me.dragon))}</small>
 </div>
@@ -64,10 +66,15 @@
 <style>
   .banner {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
     gap: 10px;
     flex-wrap: wrap;
     margin-bottom: 10px;
+  }
+
+  .banner small {
+    margin-inline-start: auto;
   }
 
   .banner small,

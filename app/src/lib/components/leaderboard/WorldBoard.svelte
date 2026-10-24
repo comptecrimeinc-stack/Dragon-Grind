@@ -6,6 +6,7 @@
   import { t } from '#lib/i18n/i18n.svelte.ts';
   import { LeaderboardUnavailable } from '#lib/services/leaderboardApi.ts';
   import { game } from '#lib/stores/game.svelte.ts';
+  import Avatar from '../profile/Avatar.svelte';
   import PlayerName from './PlayerName.svelte';
 
   let players = $state<WorldPlayer[] | null>(null);
@@ -52,7 +53,11 @@
       {@const mine = isMe(p.name, game.score.name)}
       <div class="row" class:me={mine}>
         <span class="rank">{i + 1}</span>
-        <span aria-hidden="true">{avatar(mine ? game.score.dragon : p.dragon)}</span>
+        {#if mine}
+          <Avatar dragon={game.score.dragon} frame={game.profile?.frame} size={40} />
+        {:else}
+          <span aria-hidden="true">{avatar(p.dragon)}</span>
+        {/if}
         <PlayerName kind={mine ? 'me' : 'world'} name={p.name || 'Anonyme'} dragon={p.dragon || ''} />
         <span class="val">{f(p.life || 0)}</span>
       </div>
@@ -81,7 +86,7 @@
 
   .row {
     display: grid;
-    grid-template-columns: 28px 28px 1fr auto;
+    grid-template-columns: 28px 40px 1fr auto;
     gap: 8px;
     align-items: center;
     padding: 6px 8px;

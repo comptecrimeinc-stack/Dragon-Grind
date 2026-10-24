@@ -19,10 +19,15 @@ describe('Board', () => {
     expect(mine.querySelector('.crown svg linearGradient')!.id).toMatch(/^dgCrown-cw3-/);
   });
 
-  it('garde un emoji pour les autres joueurs', () => {
+  it('affiche le portrait des autres joueurs, sans couronne', () => {
     const { container } = render(Board, { metric: 'life', title: 'Mana', format: formatNumber });
-    const others = container.querySelectorAll('.row:not(.me)');
-    expect(others.length).toBeGreaterThan(0);
-    expect(others[0].querySelector('.crown')).toBeNull();
+    const others = [...container.querySelectorAll('.row:not(.me)')];
+    expect(others.length).toBe(15);
+    for (const row of others) {
+      expect(row.querySelector('img')).not.toBeNull();
+      expect(row.querySelector('.crown')).toBeNull();
+    }
+    // Premier rival : Voranth l’Ancien, lignée solaire.
+    expect(others[0].querySelector('img')!.getAttribute('src')).toMatch(/img_08\.webp$/);
   });
 });

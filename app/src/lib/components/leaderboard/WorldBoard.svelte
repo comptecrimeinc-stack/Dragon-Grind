@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import { formatNumber as f } from '#lib/game/format.ts';
   import { isMe, type WorldPlayer } from '#lib/game/leaderboard.ts';
-  import { DRAGONS } from '#lib/game/constants.ts';
   import { t } from '#lib/i18n/i18n.svelte.ts';
   import { LeaderboardUnavailable } from '#lib/services/leaderboardApi.ts';
   import { game } from '#lib/stores/game.svelte.ts';
@@ -39,7 +38,6 @@
 
   onMount(() => void refresh(true));
 
-  const avatar = (dragon?: string) => DRAGONS.find((d) => d.id === dragon)?.icon ?? '🐲';
 </script>
 
 <p class="status" class:err={!status.ok}>{t(status.text)}</p>
@@ -53,11 +51,7 @@
       {@const mine = isMe(p.name, game.score.name)}
       <div class="row" class:me={mine}>
         <span class="rank">{i + 1}</span>
-        {#if mine}
-          <Avatar dragon={game.score.dragon} frame={game.profile?.frame} size={40} />
-        {:else}
-          <span aria-hidden="true">{avatar(p.dragon)}</span>
-        {/if}
+        <Avatar dragon={mine ? game.score.dragon : p.dragon || ''} frame={mine ? game.profile?.frame : null} size={40} />
         <PlayerName kind={mine ? 'me' : 'world'} name={p.name || 'Anonyme'} dragon={p.dragon || ''} />
         <span class="val">{f(p.life || 0)}</span>
       </div>

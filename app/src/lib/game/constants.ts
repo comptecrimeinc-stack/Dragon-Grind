@@ -271,7 +271,6 @@ export const TABS: { id: TabId; icon: string; label: string }[] = [
 ];
 
 export interface Rival {
-  avatar: string;
   name: string;
   title: string;
   life: number;
@@ -281,21 +280,21 @@ export interface Rival {
 
 /** Rivaux aux scores fixes : les dépasser un à un achève la légende. */
 export const RIVALS: Rival[] = [
-  { avatar: '🐉', name: 'Voranth l’Ancien', title: 'Le premier forgeron', life: 1e13, kills: 29, dragon: 'solar' },
-  { avatar: '☀️', name: 'Aurore-Soleil', title: 'Prêtresse de l’aube', life: 1.7e12, kills: 27, dragon: 'solar' },
-  { avatar: '🌑', name: 'Noctis Voile-de-Cendre', title: 'Voleur d’ombres', life: 3e11, kills: 25, dragon: 'shadow' },
-  { avatar: '❄️', name: 'Sigrid du Givre', title: 'Reine du givre éternel', life: 5.5e10, kills: 23, dragon: 'ice' },
-  { avatar: '⚡', name: 'Kaelis Vif-Argent', title: 'Maître des tempêtes', life: 1e10, kills: 21, dragon: 'storm' },
-  { avatar: '🌿', name: 'Syl Racine-Vive', title: 'Gardienne des racines', life: 1.8e9, kills: 18, dragon: 'nature' },
-  { avatar: '🔥', name: 'Brasek le Rouge', title: 'Champion des braises', life: 3.3e8, kills: 15, dragon: 'fire' },
-  { avatar: '🐲', name: 'Oldemar Forge-Neige', title: 'Nain des montagnes', life: 6e7, kills: 13, dragon: 'ice' },
-  { avatar: '💧', name: 'Néréa des Marées', title: 'Oracle des marées', life: 1.1e7, kills: 11, dragon: 'water' },
-  { avatar: '🔮', name: 'Yzolt l’Éveillé', title: 'Savant arcanique', life: 2e6, kills: 9, dragon: 'shadow' },
-  { avatar: '🗡️', name: 'Tisandre Sans-Peur', title: 'Mercenaire indomptable', life: 3.6e5, kills: 7, dragon: 'fire' },
-  { avatar: '🦅', name: 'Ekwyn Haut-Vent', title: 'Éclaireur des cimes', life: 6.6e4, kills: 5, dragon: 'storm' },
-  { avatar: '🪓', name: 'Gédéon Poing-de-Pierre', title: 'Tailleur de pierre', life: 1.2e4, kills: 3, dragon: 'nature' },
-  { avatar: '🍂', name: 'Morgane Cendre', title: 'Herboriste des cendres', life: 2.2e3, kills: 2, dragon: 'nature' },
-  { avatar: '🐣', name: 'Piotr le Novice', title: 'Apprenti tout juste éveillé', life: 400, kills: 1, dragon: 'fire' }
+  { name: 'Voranth l’Ancien', title: 'Le premier forgeron', life: 1e13, kills: 29, dragon: 'solar' },
+  { name: 'Aurore-Soleil', title: 'Prêtresse de l’aube', life: 1.7e12, kills: 27, dragon: 'solar' },
+  { name: 'Noctis Voile-de-Cendre', title: 'Voleur d’ombres', life: 3e11, kills: 25, dragon: 'shadow' },
+  { name: 'Sigrid du Givre', title: 'Reine du givre éternel', life: 5.5e10, kills: 23, dragon: 'ice' },
+  { name: 'Kaelis Vif-Argent', title: 'Maître des tempêtes', life: 1e10, kills: 21, dragon: 'storm' },
+  { name: 'Syl Racine-Vive', title: 'Gardienne des racines', life: 1.8e9, kills: 18, dragon: 'nature' },
+  { name: 'Brasek le Rouge', title: 'Champion des braises', life: 3.3e8, kills: 15, dragon: 'fire' },
+  { name: 'Oldemar Forge-Neige', title: 'Nain des montagnes', life: 6e7, kills: 13, dragon: 'ice' },
+  { name: 'Néréa des Marées', title: 'Oracle des marées', life: 1.1e7, kills: 11, dragon: 'water' },
+  { name: 'Yzolt l’Éveillé', title: 'Savant arcanique', life: 2e6, kills: 9, dragon: 'shadow' },
+  { name: 'Tisandre Sans-Peur', title: 'Mercenaire indomptable', life: 3.6e5, kills: 7, dragon: 'fire' },
+  { name: 'Ekwyn Haut-Vent', title: 'Éclaireur des cimes', life: 6.6e4, kills: 5, dragon: 'storm' },
+  { name: 'Gédéon Poing-de-Pierre', title: 'Tailleur de pierre', life: 1.2e4, kills: 3, dragon: 'nature' },
+  { name: 'Morgane Cendre', title: 'Herboriste des cendres', life: 2.2e3, kills: 2, dragon: 'nature' },
+  { name: 'Piotr le Novice', title: 'Apprenti tout juste éveillé', life: 400, kills: 1, dragon: 'fire' }
 ];
 
 export interface DragonMeta {

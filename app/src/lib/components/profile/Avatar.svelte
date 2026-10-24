@@ -44,7 +44,6 @@
     place-items: center;
     border-radius: 50%;
     overflow: hidden;
-    background: #0c0a0e;
     font-size: calc(var(--size) * 0.4);
   }
 

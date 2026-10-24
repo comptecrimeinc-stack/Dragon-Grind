@@ -89,7 +89,6 @@ export function crownSvg(id: FrameId): string {
   let s = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${f.hi}"/><stop offset=".45" stop-color="${f.color}"/><stop offset="1" stop-color="${f.lo}"/></linearGradient></defs>`;
   s += `<circle cx="${C}" cy="${C}" r="${RAD}" fill="none" stroke="url(#${gid})" stroke-width="${R.w}"/>`;
   s += `<circle cx="${C}" cy="${C}" r="${RAD}" fill="none" stroke="${f.hi}" stroke-width="1.8" opacity=".75"/>`;
-  s += `<circle cx="${C}" cy="${C}" r="${RAD - R.w - 3}" fill="none" stroke="${f.lo}" stroke-width="1.8" stroke-dasharray="3 4" opacity=".9"/>`;
   const gm = Math.max(4.5, R.w * 0.52);
   for (let i = 0; i < R.g; i++) {
     const a = ((i * 360) / R.g) * (Math.PI / 180);

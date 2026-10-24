@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DRAGONS } from '#lib/game/constants.ts';
+  import { COSMETIC_LABELS, DRAGONS } from '#lib/game/constants.ts';
   import { formatNumber as f } from '#lib/game/format.ts';
   import { isFrameId } from '#lib/game/profile.ts';
   import { t } from '#lib/i18n/i18n.svelte.ts';
@@ -125,8 +125,7 @@
     overflow-wrap: anywhere;
   }
 
-  .title,
-  .line {
+  .title {
     color: var(--muted);
     font-size: 0.88rem;
     margin: 0;

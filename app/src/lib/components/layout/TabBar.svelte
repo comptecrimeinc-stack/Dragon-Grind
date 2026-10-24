@@ -170,4 +170,79 @@
   .arrow[hidden] {
     display: none;
   }
+
+  /* Mobile : barre flottante en bas de l'écran, toujours à portée de pouce, sans défilement.
+     Chaque onglet se réduit à son icône ; seul l'onglet actif affiche son nom. */
+  @media (max-width: 759px) {
+    .wrap {
+      position: fixed;
+      inset-inline: 8px;
+      bottom: calc(8px + env(safe-area-inset-bottom));
+      z-index: 60;
+      height: var(--bottom-nav-h);
+      margin: 0;
+      padding: 6px;
+      gap: 4px;
+      border-color: var(--line-strong);
+      box-shadow: 0 -4px 30px #000c;
+    }
+
+    .arrow {
+      display: none;
+    }
+
+    .tabs {
+      overflow: visible;
+      padding: 0;
+      gap: 4px;
+    }
+
+    .tab,
+    .tab.settings {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 100%;
+      min-height: 0;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1px;
+      padding: 2px;
+      /* Police du texte, plus étroite que Cinzel : « Renaissance » tient dans l'onglet actif. */
+      font: 700 0.7rem var(--font-body);
+    }
+
+    .tab.settings {
+      flex: 0 0 auto;
+      width: 42px;
+    }
+
+    .tab.active {
+      flex: 3.6 1 0;
+    }
+
+    .ti {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .tl {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Nom masqué visuellement mais lu par les lecteurs d'écran. */
+    .tab:not(.active) .tl {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      clip: rect(0 0 0 0);
+    }
+
+    .badge {
+      top: -6px;
+      inset-inline-end: -2px;
+    }
+  }
 </style>

@@ -27,6 +27,15 @@
   --font-body: 'Alegreya', Georgia, serif;
   --gutter: 16px;
   --maxw: 1100px;
+  /* Hauteur de la barre d'onglets flottante (mobile uniquement) : les éléments fixés en bas s'écartent d'autant. */
+  --bottom-nav-h: 0px;
+  --bottom-offset: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 759px) {
+  :root {
+    --bottom-nav-h: 62px;
+  }
 }
 
 *,

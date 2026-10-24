@@ -86,7 +86,7 @@
   main {
     width: min(var(--maxw), 100%);
     margin-inline: auto;
-    padding: 0 var(--gutter) 120px;
+    padding: 0 var(--gutter) calc(120px + var(--bottom-offset));
   }
 
   main:focus {

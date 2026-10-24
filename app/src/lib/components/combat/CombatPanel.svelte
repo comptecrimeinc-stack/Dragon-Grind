@@ -21,7 +21,7 @@
 <h2>{t('Succès')} <small>{t('la checklist de la forge')}</small></h2>
 <AchievementList />
 <div class="reset">
-  <ConfirmButton label="Effacer la sauvegarde" confirmLabel="Toucher encore pour tout effacer" variant="ghost" onconfirm={() => game.resetGame()} />
+  <ConfirmButton label="Effacer la sauvegarde" confirmLabel="Toucher encore pour tout effacer" variant="ghost" onconfirm={() => game.restartFromScratch()} />
 </div>
 
 <style>

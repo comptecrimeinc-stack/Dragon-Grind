@@ -9,7 +9,7 @@ import { stageIndex } from '#lib/game/economy.ts';
 import { formatAdventure } from '#lib/game/format.ts';
 import * as forge from '#lib/game/forge.ts';
 import type { Fx, SoundName } from '#lib/game/fx.ts';
-import { dedupeHeroes, localRank, rivalJustPassed, upsertHero, type Hero, type PlayerScore } from '#lib/game/leaderboard.ts';
+import { dedupeHeroes, isMe, localRank, rivalJustPassed, upsertHero, type Hero, type PlayerScore } from '#lib/game/leaderboard.ts';
 import { isImportantToast, toastTargetTab } from '#lib/game/notifications.ts';
 import { checkProfileName, framesUnlocked, isFrameId, type Profile } from '#lib/game/profile.ts';
 import { heraldryAchievementCount, selectLineage, tabUnlocked } from '#lib/game/progression.ts';
@@ -172,9 +172,10 @@ export class Game {
     if (advOffline.gold > 0) this.pending.push('Aventure hors ligne : +' + formatAdventure(advOffline.gold) + ' or et matériaux communs · maximum 8 h');
 
     const offline = applyOfflineProgress(this.S, result.offlineSeconds);
-    if (offline.earned > 0) this.offline = offline;
+    if (offline.earned > 0) this.showOffline(offline);
 
     this.lastStage = stageIndex(this.S);
+    this.seenTabs.clear();
     for (const t of TABS) if (tabUnlocked(this.S, t.id)) this.seenTabs.add(t.id);
     if (!tabUnlocked(this.S, this.activeTab)) this.activeTab = 'combat';
     this.nextSurpriseAt = now + (240 + Math.random() * 360) * 1000;
@@ -247,7 +248,7 @@ export class Game {
     this.hiddenSince = 0;
     this.S.t = now;
     const offline = applyOfflineProgress(this.S, away);
-    if (offline.earned > 0) this.offline = offline;
+    if (offline.earned > 0) this.showOffline(offline);
     this.save(now);
   }
 
@@ -272,7 +273,23 @@ export class Game {
     const target = toastTargetTab(message);
     if (target && target !== this.activeTab && !this.noticeTabs.includes(target)) this.noticeTabs.push(target);
     this.toasts.push({ id: ++this.toastSeq, message, important: isImportantToast(message) });
-    if (!this.currentToast && !this.offline) this.showNextToast();
+    if (!this.currentToast && this.dialog !== 'offline') this.showNextToast();
+  }
+
+  /**
+   * Fenêtre à afficher : une seule à la fois. Celles que le joueur ouvre lui-même passent
+   * avant le récapitulatif hors ligne, qui attend leur fermeture au lieu de les recouvrir.
+   */
+  get dialog(): 'settings' | 'profile' | 'offline' | null {
+    if (this.settingsOpen) return 'settings';
+    if (this.profileCard) return 'profile';
+    if (this.offline) return 'offline';
+    return null;
+  }
+
+  /** Cumule les gains hors ligne d'absences successives tant que le récapitulatif n'est pas lu. */
+  private showOffline(summary: OfflineSummary): void {
+    this.offline = this.offline ? { seconds: this.offline.seconds + summary.seconds, earned: this.offline.earned + summary.earned } : summary;
   }
 
   private showNextToast(): void {
@@ -341,16 +358,6 @@ export class Game {
     this.S.tuto = 1;
     this.save();
   };
-
-  /** Efface la progression (bouton « Effacer la sauvegarde » de la Chasse). */
-  resetGame(): void {
-    persistence.createSnapshot(this.S, 'avant', true);
-    this.S = freshState();
-    adventure.ensureAdventure(this.S, this.cosmetics.purchased.includes('obsidian-skin'));
-    this.lastStage = 0;
-    this.save();
-    this.toast('Partie réinitialisée');
-  }
 
   /** Aventure du joueur, garantie par `load` et la boucle d'aventure (lecture sans effet de bord). */
   get adventureState(): AdventureState {
@@ -610,8 +617,20 @@ export class Game {
     this.saveStatus = persistence.HEALTH_TEXT[ok ? (this.saveFailing ? 'backupOnly' : 'manual') : 'backupFail'];
   }
 
+  /**
+   * Remet la progression à zéro. Une copie de sécurité est créée avant (restaurable dans les
+   * Paramètres) ; le profil, la langue et la boutique sont conservés. La fiche du joueur dans le
+   * classement de l'appareil repart aussi de zéro, sinon elle garderait les anciens records.
+   */
   restartFromScratch(): boolean {
-    return this.replaceGame(freshState(), 'avant');
+    if (!this.replaceGame(freshState(), 'avant')) return false;
+    if (this.profile) {
+      this.heroes = this.heroes.filter((h) => !isMe(h.name, this.profile!.name));
+      this.syncHero();
+    }
+    this.lastRank = 0;
+    this.toast('Partie réinitialisée');
+    return true;
   }
 }
 

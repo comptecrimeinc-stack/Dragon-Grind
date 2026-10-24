@@ -79,9 +79,6 @@
 
 <style>
   .wrap {
-    position: sticky;
-    top: var(--header-h, 0px);
-    z-index: 40;
     display: flex;
     align-items: center;
     gap: 6px;

@@ -35,7 +35,6 @@
   };
 
   let ready = $state(false);
-  let headerHeight = $state(0);
 
   onMount(() => {
     game.load();
@@ -61,8 +60,8 @@
     <ProfileGate />
   {:else}
     <a class="skip" href="#main">{t('Aller au contenu principal')}</a>
-    <div bind:clientHeight={headerHeight}><Header /></div>
-    <main id="main" tabindex="-1" style:--header-h="{headerHeight}px">
+    <Header />
+    <main id="main" tabindex="-1">
       <DragonField />
       <TabBar />
       <div id="panel-{game.activeTab}" role="tabpanel" tabindex="-1" aria-labelledby="tab-{game.activeTab}" class="panel">
@@ -72,9 +71,13 @@
 
     {#if game.S.tuto !== 1}<TutorialCard />{/if}
     {#if game.surprise}<SurpriseEvent surprise={game.surprise} />{/if}
-    {#if game.settingsOpen}<SettingsModal />{/if}
-    {#if game.profileCard}<ProfileCardModal />{/if}
-    {#if game.offline}<OfflineModal seconds={game.offline.seconds} earned={game.offline.earned} />{/if}
+    {#if game.dialog === 'settings'}
+      <SettingsModal />
+    {:else if game.dialog === 'profile'}
+      <ProfileCardModal />
+    {:else if game.dialog === 'offline' && game.offline}
+      <OfflineModal seconds={game.offline.seconds} earned={game.offline.earned} />
+    {/if}
   {/if}
   <Toast />
 {/if}

@@ -115,7 +115,8 @@ export class Game {
     sound: this.S.snd !== 0,
     music: this.S.mus !== 0,
     haptics: this.S.hap !== 0,
-    volume: this.S.vol
+    volume: this.S.vol,
+    musicVolume: this.S.musVol
   }));
   readonly leaderboard = new LeaderboardApi();
 
@@ -404,8 +405,9 @@ export class Game {
 
   // ——— Paramètres ———
 
-  setAudio(patch: Partial<Pick<GameState, 'snd' | 'hap' | 'shake' | 'mus' | 'vol'>>): void {
+  setAudio(patch: Partial<Pick<GameState, 'snd' | 'hap' | 'shake' | 'mus' | 'vol' | 'musVol'>>): void {
     Object.assign(this.S, patch);
+    if (patch.musVol !== undefined) this.sound.updateMusicVolume();
     if (patch.mus === 0) this.sound.stopMusic();
     if (patch.mus === 1) this.sound.startMusic();
     this.save();

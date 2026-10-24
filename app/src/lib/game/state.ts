@@ -95,7 +95,10 @@ export interface GameState {
   hap: number;
   shake: number;
   mus: number;
+  /** Volume des effets sonores (souffles, achats, combats…), de 0 à 100. */
   vol: number;
+  /** Volume de la musique d'ambiance, de 0 à 100. */
+  musVol: number;
   saveVersion: number;
   t: number;
 }
@@ -147,7 +150,7 @@ export function freshState(now = Date.now()): GameState {
     adventure: null,
     path: '', pathLoy: 0, oaths: 0,
     playMs: 0, evCaught: 0, lastExport: 0,
-    snd: 1, hap: 1, shake: 1, mus: 1, vol: 70,
+    snd: 1, hap: 1, shake: 1, mus: 1, vol: 70, musVol: 70,
     saveVersion: SAVE_VERSION,
     t: now
   };
@@ -187,9 +190,9 @@ function numberMap(value: unknown, label: string, integer: boolean, strict: bool
   return out;
 }
 
-const NUMERIC_KEYS = ['gold', 'run', 'life', 'taps', 'embers', 'eAll', 'ranks', 'rk', 'stars', 'asc', 'claw', 'boss', 'bossHp', 'bossKills', 'bossAttackAt', 'bossTelegraphUntil', 'bossInterrupts', 'bossStunUntil', 'bossWeakenUntil', 'combo', 'comboAt', 'ascPts', 'buffUntil', 'relicShards', 'eggWarm', 'eggsOpened', 'tuto', 't', 'snd', 'hap', 'shake', 'mus', 'vol', 'v', 'playMs', 'evCaught', 'lastExport', 'oaths', 'pathLoy'] as const;
+const NUMERIC_KEYS = ['gold', 'run', 'life', 'taps', 'embers', 'eAll', 'ranks', 'rk', 'stars', 'asc', 'claw', 'boss', 'bossHp', 'bossKills', 'bossAttackAt', 'bossTelegraphUntil', 'bossInterrupts', 'bossStunUntil', 'bossWeakenUntil', 'combo', 'comboAt', 'ascPts', 'buffUntil', 'relicShards', 'eggWarm', 'eggsOpened', 'tuto', 't', 'snd', 'hap', 'shake', 'mus', 'vol', 'musVol', 'v', 'playMs', 'evCaught', 'lastExport', 'oaths', 'pathLoy'] as const;
 const FLOAT_KEYS = new Set(['gold', 'run', 'life', 'bossHp', 'relicShards', 'eggWarm', 't']);
-const BOUNDS: Partial<Record<string, number>> = { eggWarm: 1, vol: 100, snd: 1, hap: 1, shake: 1, mus: 1, v: 6 };
+const BOUNDS: Partial<Record<string, number>> = { eggWarm: 1, vol: 100, musVol: 100, snd: 1, hap: 1, shake: 1, mus: 1, v: 6 };
 const PATHS: AscPathId[] = ['devourer', 'archmage', 'eternal', 'void'];
 
 function normalizeDaily(value: unknown, strict: boolean, withDefaults: boolean): DailyState {
@@ -256,6 +259,8 @@ export function normalizeSaveData(input: unknown, strict = false, now = Date.now
     if (bound !== undefined) n = Math.min(bound, n);
     state[k] = n;
   }
+  // Les sauvegardes antérieures n'avaient qu'un volume commun : la musique en hérite.
+  if (!('musVol' in src)) state.musVol = state.vol;
 
   for (const k of ['u', 'tal', 'ach', 'vu', 'ascTal', 'skillCd', 'dragonDex', 'sanctuaries', 'secrets']) {
     if (src[k] !== undefined && !isRecord(src[k]) && strict) throw new SaveValidationError('Structure invalide : ' + k);

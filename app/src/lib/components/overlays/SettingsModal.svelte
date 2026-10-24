@@ -42,7 +42,7 @@
   }
 
   function resetOptions() {
-    game.setAudio({ snd: 1, hap: 1, shake: 1, mus: 1, vol: 70 });
+    game.setAudio({ snd: 1, hap: 1, shake: 1, mus: 1, vol: 70, musVol: 70 });
     game.setSettings({ logo: true, motion: false, quality: 'auto' });
     game.setAutosave(true);
   }
@@ -59,19 +59,26 @@
     <input type="checkbox" checked={S.snd !== 0} onchange={(e) => game.setAudio({ snd: e.currentTarget.checked ? 1 : 0 })} />
   </label>
   <label class="row">
-    <span><strong>{t('Volume')}</strong><small>{t('Intensité sonore')}</small></span>
+    <span><strong>{t('Volume des effets')}</strong><small>{t('Souffles, achats, combats et récompenses')}</small></span>
     <span class="range">
-      <input type="range" min="0" max="100" step="5" value={S.vol} oninput={(e) => game.setAudio({ vol: Number(e.currentTarget.value) })} />
+      <input type="range" min="0" max="100" step="5" value={S.vol} disabled={S.snd === 0} oninput={(e) => game.setAudio({ vol: Number(e.currentTarget.value) })} />
       <output>{S.vol} %</output>
+    </span>
+  </label>
+  <label class="row">
+    <span><strong>{t('Musique d’ambiance')}</strong><small>{t('Activer ou couper la musique')}</small></span>
+    <input type="checkbox" checked={S.mus !== 0} onchange={(e) => game.setAudio({ mus: e.currentTarget.checked ? 1 : 0 })} />
+  </label>
+  <label class="row">
+    <span><strong>{t('Volume de la musique')}</strong><small>{t('Bourdon et luth de la forge')}</small></span>
+    <span class="range">
+      <input type="range" min="0" max="100" step="5" value={S.musVol} disabled={S.mus === 0} oninput={(e) => game.setAudio({ musVol: Number(e.currentTarget.value) })} />
+      <output>{S.musVol} %</output>
     </span>
   </label>
   <label class="row">
     <span><strong>{t('Vibrations')}</strong><small>{t('Retour haptique sur les appareils compatibles')}</small></span>
     <input type="checkbox" checked={S.hap !== 0} onchange={(e) => game.setAudio({ hap: e.currentTarget.checked ? 1 : 0 })} />
-  </label>
-  <label class="row">
-    <span><strong>{t('Musique d’ambiance')}</strong><small>{t('Activer ou couper la musique')}</small></span>
-    <input type="checkbox" checked={S.mus !== 0} onchange={(e) => game.setAudio({ mus: e.currentTarget.checked ? 1 : 0 })} />
   </label>
   <label class="row">
     <span><strong>{t('Secousses d’écran')}</strong><small>{t('Activer ou couper les secousses visuelles')}</small></span>
@@ -200,6 +207,10 @@
     color: var(--muted);
   }
 
+  input:disabled {
+    opacity: 0.4;
+  }
+
   input[type='checkbox'] {
     width: 22px;
     height: 22px;
@@ -211,6 +222,17 @@
     display: flex;
     gap: 8px;
     align-items: center;
+    flex: none;
+  }
+
+  .range input {
+    width: min(140px, 32vw);
+  }
+
+  .range output {
+    min-width: 3.2em;
+    text-align: end;
+    white-space: nowrap;
   }
 
   select {

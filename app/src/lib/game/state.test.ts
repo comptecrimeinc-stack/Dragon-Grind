@@ -52,6 +52,12 @@ describe('normalizeSaveData', () => {
     expect(s.path).toBe('');
   });
 
+  it('donne à la musique le volume commun des anciennes sauvegardes', () => {
+    expect(normalizeSaveData({ vol: 40 }).musVol).toBe(40);
+    expect(normalizeSaveData({ vol: 40, musVol: 10 }).musVol).toBe(10);
+    expect(normalizeSaveData({ musVol: 500 }).musVol).toBe(100);
+  });
+
   it('produit un état neuf cohérent', () => {
     const s = freshState(5);
     expect(s.t).toBe(5);

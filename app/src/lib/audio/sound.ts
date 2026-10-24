@@ -27,7 +27,10 @@ export interface AudioSettings {
   sound: boolean;
   music: boolean;
   haptics: boolean;
+  /** Volume des effets sonores, de 0 à 100. */
   volume: number;
+  /** Volume de la musique, de 0 à 100. */
+  musicVolume: number;
 }
 
 const SCALE = [220, 261.63, 293.66, 329.63, 392, 440, 523.25];
@@ -58,6 +61,17 @@ export class SoundBoard {
 
   private get volume(): number {
     return Math.max(0, Math.min(100, this.settings().volume)) / 100;
+  }
+
+  /** Gain de la musique : discret même à 100 %, coupé net à 0 %. */
+  private get musicLevel(): number {
+    const v = Math.max(0, Math.min(100, this.settings().musicVolume)) / 100;
+    return v > 0 ? Math.max(0.008, v * 0.16) : 0;
+  }
+
+  /** Applique tout de suite un changement de volume de la musique en cours. */
+  updateMusicVolume(): void {
+    if (this.musicGain) this.musicGain.gain.value = this.musicLevel;
   }
 
   private tone(o: Tone): void {
@@ -206,7 +220,7 @@ export class SoundBoard {
     if (!c) return;
     try {
       this.musicGain = c.createGain();
-      this.musicGain.gain.value = Math.max(0.008, this.volume * 0.16);
+      this.musicGain.gain.value = this.musicLevel;
       this.musicGain.connect(c.destination);
       for (const [freq, level] of [[110, 0.028], [164.81, 0.02], [220, 0.014]]) {
         const osc = c.createOscillator();
@@ -225,7 +239,7 @@ export class SoundBoard {
       }
       this.timer = setInterval(() => {
         if (!this.settings().music) return this.stopMusic();
-        if (this.musicGain) this.musicGain.gain.value = Math.max(0.008, this.volume * 0.16);
+        this.updateMusicVolume();
         const idx = MOTIF[this.step % MOTIF.length];
         this.step++;
         if (idx >= 0 && Math.random() < 0.85) this.pluck(SCALE[idx], 0.05 + Math.random() * 0.03);

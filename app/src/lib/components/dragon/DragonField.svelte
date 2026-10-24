@@ -98,12 +98,12 @@
     color: var(--gold);
   }
 
+  /* Les lignées passent à la ligne plutôt que de défiler horizontalement. */
   .lineages {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
-    overflow-x: auto;
-    padding: 4px 2px 8px;
-    scrollbar-width: thin;
+    padding: 4px 2px;
   }
 
   .lineages button {

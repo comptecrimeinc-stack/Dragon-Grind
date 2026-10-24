@@ -74,7 +74,6 @@ export type Metric = 'life' | 'kills' | 'rk';
 
 export interface BoardRow {
   rank: number;
-  avatar: string;
   name: string;
   value: number;
   dragon: string;
@@ -85,7 +84,7 @@ export interface BoardRow {
 const rivalRebirths = (life: number): number => Math.max(0, Math.floor(Math.log10(Math.max(10, life))) - 2);
 
 /** Classement local d'une métrique : rivaux, héros de l'appareil et le joueur, une ligne par nom. */
-export function boardRows(metric: Metric, me: PlayerScore, heroes: Hero[], avatarFor: (dragon: string) => string): BoardRow[] {
+export function boardRows(metric: Metric, me: PlayerScore, heroes: Hero[]): BoardRow[] {
   const meKey = nameKey(me.name);
   const seen = new Set<string>();
   const rows: Omit<BoardRow, 'rank'>[] = [];
@@ -94,15 +93,15 @@ export function boardRows(metric: Metric, me: PlayerScore, heroes: Hero[], avata
     if (k === meKey || seen.has(k)) continue;
     seen.add(k);
     const value = metric === 'life' ? r.life : metric === 'kills' ? r.kills : rivalRebirths(r.life);
-    rows.push({ avatar: r.avatar, name: r.name, value, dragon: r.dragon, kind: 'npc' });
+    rows.push({ name: r.name, value, dragon: r.dragon, kind: 'npc' });
   }
   for (const h of heroes) {
     const k = nameKey(h.name);
     if (!k || k === meKey || seen.has(k)) continue;
     seen.add(k);
-    rows.push({ avatar: avatarFor(h.dragon), name: h.name, value: h[metric] || 0, dragon: h.dragon, kind: 'hero' });
+    rows.push({ name: h.name, value: h[metric] || 0, dragon: h.dragon, kind: 'hero' });
   }
-  rows.push({ avatar: avatarFor(me.dragon), name: me.name, value: me[metric], dragon: me.dragon, kind: 'me' });
+  rows.push({ name: me.name, value: me[metric], dragon: me.dragon, kind: 'me' });
   rows.sort((a, b) => (b.value || 0) - (a.value || 0));
   return rows.map((r, i) => ({ ...r, rank: i + 1 }));
 }

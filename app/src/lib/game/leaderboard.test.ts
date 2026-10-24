@@ -18,7 +18,7 @@ describe('classement', () => {
   });
 
   it('classe le joueur parmi les rivaux', () => {
-    const rows = boardRows('life', me, [], () => '🐲');
+    const rows = boardRows('life', me, []);
     expect(rows).toHaveLength(RIVALS.length + 1);
     const mine = rows.find((r) => r.kind === 'me')!;
     expect(mine.rank).toBe(localRank(me.life, [], me.name));

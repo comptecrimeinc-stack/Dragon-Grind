@@ -16,7 +16,7 @@
   .tuto {
     position: fixed;
     left: 50%;
-    bottom: calc(80px + env(safe-area-inset-bottom));
+    bottom: calc(80px + var(--bottom-offset));
     z-index: 800;
     transform: translateX(-50%);
     display: flex;

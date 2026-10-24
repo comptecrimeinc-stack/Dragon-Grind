@@ -41,7 +41,7 @@
   {#each others as h, i (h.id)}
     <div class="hero">
       <span class="rank">#{i + 1}</span>
-      <span aria-hidden="true">{DRAGONS.find((d) => d.id === h.dragon)?.icon ?? '🐲'}</span>
+      <Avatar dragon={h.dragon} size={40} />
       <div>
         <PlayerName kind="hero" name={h.name} dragon={h.dragon} />
         <small>{t('Lignée ' + h.dragon + ' · ' + f(h.life) + ' mana · ' + h.kills + ' titans')}</small>
@@ -56,7 +56,7 @@
 <div class="rivals">
   {#each RIVALS as r (r.name)}
     <button type="button" class="rival" onclick={() => (game.profileCard = { kind: 'npc', name: r.name, dragon: r.dragon })}>
-      <span class="av" aria-hidden="true">{r.avatar}</span>
+      <Avatar dragon={r.dragon} size={64} />
       <strong>{t(r.name)}</strong>
       <small>{t(r.title)}</small>
     </button>
@@ -100,7 +100,7 @@
 
   .hero {
     display: grid;
-    grid-template-columns: 34px 28px 1fr;
+    grid-template-columns: 34px 40px 1fr;
     gap: 8px;
     align-items: center;
     padding: 8px 10px;
@@ -135,7 +135,4 @@
     cursor: pointer;
   }
 
-  .av {
-    font-size: 1.8rem;
-  }
 </style>

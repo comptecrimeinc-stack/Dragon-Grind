@@ -111,4 +111,31 @@
     color: var(--muted);
     font-size: 0.85rem;
   }
+
+  /* Mobile : en-tête compact, le titre tient sur une ligne et laisse la place au jeu. */
+  @media (max-width: 759px) {
+    header {
+      padding-block: 8px;
+      gap: 8px;
+    }
+
+    img {
+      width: 38px;
+      height: 38px;
+    }
+
+    strong {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .em,
+    .rate,
+    .seal {
+      font-size: 0.72rem;
+      line-height: 1.3;
+    }
+  }
 </style>

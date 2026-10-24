@@ -4,11 +4,17 @@ import { recordingFx } from './fx';
 import { freshState } from './state';
 
 describe('souffle', () => {
-  it('limite la cadence à douze souffles par seconde', () => {
+  it('limite la cadence à vingt souffles par seconde', () => {
     const limiter = new TapLimiter();
-    const allowed = Array.from({ length: 20 }, (_, i) => limiter.allow(1000 + i)).filter(Boolean).length;
-    expect(allowed).toBe(12);
+    const allowed = Array.from({ length: 30 }, (_, i) => limiter.allow(1000 + i)).filter(Boolean).length;
+    expect(allowed).toBe(20);
     expect(limiter.allow(2001)).toBe(true);
+  });
+
+  it('laisse passer un tapotement rapide à deux pouces (≈ 15 par seconde)', () => {
+    const limiter = new TapLimiter();
+    const taps = Array.from({ length: 45 }, (_, i) => limiter.allow(i * 66));
+    expect(taps.every(Boolean)).toBe(true);
   });
 
   it('enchaîne le combo et augmente le gain', () => {

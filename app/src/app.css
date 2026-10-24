@@ -1,0 +1,235 @@
+/* Dragon Grind — thème global. Les composants gardent leurs styles propres (CSS scopé) ;
+   ce fichier ne contient que les jetons de design et les primitives partagées. */
+
+:root {
+  color-scheme: dark;
+  --bg: #07070b;
+  --bg-2: #0e0b10;
+  --surface: #15111a;
+  --surface-2: #1d1720;
+  --surface-3: #2a2028;
+  --line: #3b2d27;
+  --line-strong: #8e6539;
+  --ink: #f5e6c5;
+  --ink-2: #dfd0b6;
+  --muted: #b8a68d;
+  --gold: #e8c77f;
+  --gold-2: #f0d18a;
+  --gold-deep: #a87938;
+  --ember: #ff8a3a;
+  --ember-2: #ff5a2a;
+  --danger: #ff7a66;
+  --ok: #8fd18a;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 10px 40px #000a;
+  --font-title: 'Cinzel', 'Times New Roman', serif;
+  --font-body: 'Alegreya', Georgia, serif;
+  --gutter: 16px;
+  --maxw: 1100px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, #3a1d1066, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 110%, #2a0f0a55, transparent 70%),
+    var(--bg);
+  color: var(--ink);
+  font: 17px/1.5 var(--font-body);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-title);
+  color: var(--gold);
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 34px 0 12px;
+  font-size: 1.25rem;
+}
+
+h2 small {
+  font-family: var(--font-body);
+  font-variant: normal;
+  letter-spacing: 0;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+h3 {
+  font-size: 1.05rem;
+  margin: 0 0 8px;
+}
+
+p {
+  margin: 0 0 10px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold-2);
+  outline-offset: 2px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.card {
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: inset 0 1px 0 #ffffff08;
+}
+
+/* Bouton d'action standard (achats, réclamations…) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 8px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, #3a2a1c, #241811);
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: pre-line;
+  text-align: center;
+  transition:
+    filter 0.15s,
+    transform 0.1s;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.18);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  border-color: var(--gold-2);
+  background: linear-gradient(180deg, var(--gold-deep), #68451f);
+  color: #fff1c9;
+}
+
+.btn.ghost {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.track {
+  height: 8px;
+  border-radius: 99px;
+  background: #241a16;
+  overflow: hidden;
+}
+
+.track > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--ember-2), var(--ember), var(--gold-2));
+  transition: width 0.25s;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+body.reduced-motion *,
+body.reduced-motion *::before,
+body.reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-6px, 3px);
+  }
+  40% {
+    transform: translate(5px, -4px);
+  }
+  60% {
+    transform: translate(-4px, 2px);
+  }
+  80% {
+    transform: translate(3px, -1px);
+  }
+}
+
+body.shake {
+  animation: shake 0.45s;
+}
+
+/* Phrase d'introduction en tête de chaque onglet */
+.intro {
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-inline-start: 3px solid var(--gold-deep);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink-2);
+}

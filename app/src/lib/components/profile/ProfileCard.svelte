@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { COSMETIC_LABELS, DRAGONS } from '#lib/game/constants.ts';
+  import { DRAGONS } from '#lib/game/constants.ts';
   import { formatNumber as f } from '#lib/game/format.ts';
-  import { frameDef, isFrameId } from '#lib/game/profile.ts';
+  import { isFrameId } from '#lib/game/profile.ts';
   import { t } from '#lib/i18n/i18n.svelte.ts';
   import { game } from '#lib/stores/game.svelte.ts';
   import Avatar from './Avatar.svelte';
@@ -45,13 +45,6 @@
       <div><small>{t(label)}</small><strong>{value}</strong></div>
     {/each}
   </div>
-  {#if frame}
-    <p class="line">{t('Cadre héraldique')} : <i style:color={frameDef(frame).color}>{frameDef(frame).glyph}</i> {t(frameDef(frame).short)}</p>
-  {/if}
-  {#if isMe}
-    {#if shown.length}<p class="line">✨ {shown.map((id) => t(COSMETIC_LABELS[id])).join(' · ')}</p>{/if}
-    <p class="line">{t(shown.length + ' cosmétique(s) équipé(s) · ' + game.cosmetics.owned.length + ' débloqué(s)')}</p>
-  {/if}
   <div class="foot">✦ ✦ ✦</div>
 </div>
 

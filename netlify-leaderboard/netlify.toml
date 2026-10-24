@@ -1,8 +1,0 @@
-[build]
-  publish = "."
-  functions = "functions"
-
-[[redirects]]
-  from = "/api/leaderboard"
-  to = "/.netlify/functions/dg-leaderboard"
-  status = 200

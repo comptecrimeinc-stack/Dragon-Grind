@@ -1,8 +1,8 @@
 import type { SoundName } from '#lib/game/fx.ts';
 
 /**
- * Ambiance sonore synthétisée (Web Audio) : aucun fichier audio à télécharger.
- * Sons courts pour les actions, et une musique douce (bourdon + luth procédural).
+ * Sons courts synthétisés (Web Audio) pour les actions,
+ * et musique d'ambiance depuis un fichier audio.
  */
 interface Tone {
   f: number;
@@ -33,17 +33,15 @@ export interface AudioSettings {
   musicVolume: number;
 }
 
-const SCALE = [220, 261.63, 293.66, 329.63, 392, 440, 523.25];
-const MOTIF = [0, -1, 2, -1, 4, -1, 3, 1, -1, 5, 4, -1, 2, -1, 1, -1];
-
 export class SoundBoard {
   private ctx: AudioContext | null = null;
-  private musicGain: GainNode | null = null;
-  private drones: OscillatorNode[] = [];
-  private timer: ReturnType<typeof setInterval> | null = null;
-  private step = 0;
+  private musicAudio: HTMLAudioElement;
 
-  constructor(private settings: () => AudioSettings) {}
+  constructor(private settings: () => AudioSettings) {
+    this.musicAudio = new Audio('/audio/ambiance.ogg');
+    this.musicAudio.loop = true;
+    this.musicAudio.volume = 0;
+  }
 
   private context(): AudioContext | null {
     try {
@@ -66,12 +64,12 @@ export class SoundBoard {
   /** Gain de la musique : discret même à 100 %, coupé net à 0 %. */
   private get musicLevel(): number {
     const v = Math.max(0, Math.min(100, this.settings().musicVolume)) / 100;
-    return v > 0 ? Math.max(0.008, v * 0.16) : 0;
+    return v > 0 ? Math.max(0.008, v * 0.75) : 0;
   }
 
   /** Applique tout de suite un changement de volume de la musique en cours. */
   updateMusicVolume(): void {
-    if (this.musicGain) this.musicGain.gain.value = this.musicLevel;
+    this.musicAudio.volume = this.musicLevel;
   }
 
   private tone(o: Tone): void {
@@ -194,77 +192,19 @@ export class SoundBoard {
     }
   };
 
-  private pluck(f: number, vol: number): void {
-    const c = this.ctx;
-    if (!c || !this.musicGain) return;
-    const t = c.currentTime;
-    const osc = c.createOscillator();
-    const g = c.createGain();
-    const lp = c.createBiquadFilter();
-    osc.type = 'triangle';
-    osc.frequency.value = f;
-    lp.type = 'lowpass';
-    lp.frequency.value = 1400;
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(vol, t + 0.008);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
-    osc.connect(lp).connect(g).connect(this.musicGain);
-    osc.start(t);
-    osc.stop(t + 1.5);
-  }
-
   /** Démarre la musique (à appeler après un geste de l'utilisateur, exigence des navigateurs). */
-  startMusic(): void {
-    if (!this.settings().music || this.timer) return;
-    const c = this.context();
-    if (!c) return;
+  async startMusic(): Promise<void> {
+    if (!this.settings().music) return;
     try {
-      this.musicGain = c.createGain();
-      this.musicGain.gain.value = this.musicLevel;
-      this.musicGain.connect(c.destination);
-      for (const [freq, level] of [[110, 0.028], [164.81, 0.02], [220, 0.014]]) {
-        const osc = c.createOscillator();
-        const g = c.createGain();
-        const lfo = c.createOscillator();
-        const lg = c.createGain();
-        osc.frequency.value = freq;
-        g.gain.value = level;
-        lfo.frequency.value = 0.07 + Math.random() * 0.06;
-        lg.gain.value = level * 0.5;
-        lfo.connect(lg).connect(g.gain);
-        osc.connect(g).connect(this.musicGain);
-        osc.start();
-        lfo.start();
-        this.drones.push(osc, lfo);
-      }
-      this.timer = setInterval(() => {
-        if (!this.settings().music) return this.stopMusic();
-        this.updateMusicVolume();
-        const idx = MOTIF[this.step % MOTIF.length];
-        this.step++;
-        if (idx >= 0 && Math.random() < 0.85) this.pluck(SCALE[idx], 0.05 + Math.random() * 0.03);
-        if (this.step % 16 === 0) {
-          this.pluck(110, 0.07);
-          this.pluck(164.81, 0.05);
-        }
-      }, 650);
+      this.musicAudio.volume = this.musicLevel;
+      await this.musicAudio.play();
     } catch {
       this.stopMusic();
     }
   }
 
   stopMusic(): void {
-    if (this.timer) clearInterval(this.timer);
-    this.timer = null;
-    for (const d of this.drones) {
-      try {
-        d.stop();
-      } catch {
-        /* déjà arrêté */
-      }
-    }
-    this.drones = [];
-    this.musicGain?.disconnect();
-    this.musicGain = null;
+    this.musicAudio.pause();
+    this.musicAudio.currentTime = 0;
   }
 }
